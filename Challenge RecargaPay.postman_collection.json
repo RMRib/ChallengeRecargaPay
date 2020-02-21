@@ -1,0 +1,333 @@
+{
+	"info": {
+		"_postman_id": "83769145-dc4e-456d-907f-080d41655851",
+		"name": "Challenge RecargaPay",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Step 1 - Get posts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f483f4a-03a9-4653-98c4-95f20ffd0b36",
+						"exec": [
+							"//HTTP status Validation",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response must be json and have a body\", function () {",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"// Response.Body Validations",
+							"pm.test('Response Schema is valid', () => {",
+							"    const schema = {",
+							"        \"type\": \"array\",",
+							"        \"title\": \"The Root Schema\",",
+							"        \"items\": {",
+							"          \"$id\": \"#/items\",",
+							"          \"type\": \"object\",",
+							"          \"title\": \"The Items Schema\",",
+							"          \"required\": [",
+							"            \"userId\",",
+							"            \"id\",",
+							"            \"title\",",
+							"            \"body\"",
+							"          ],",
+							"          \"properties\": {",
+							"            \"userId\": {",
+							"              \"$id\": \"#/items/properties/userId\",",
+							"              \"type\": \"integer\",",
+							"              \"title\": \"The Userid Schema\"",
+							"            },",
+							"            \"id\": {",
+							"              \"$id\": \"#/items/properties/id\",",
+							"              \"type\": \"integer\",",
+							"              \"title\": \"The Id Schema\"",
+							"            },",
+							"            \"title\": {",
+							"              \"$id\": \"#/items/properties/title\",",
+							"              \"type\": \"string\",",
+							"              \"title\": \"The Title Schema\"",
+							"            },",
+							"            \"body\": {",
+							"              \"$id\": \"#/items/properties/body\",",
+							"              \"type\": \"string\",",
+							"              \"title\": \"The Body Schema\"",
+							"            }",
+							"          }",
+							"        }",
+							"    };",
+							"pm.response.to.have.jsonSchema(schema);",
+							"});",
+							"",
+							"pm.test(\"Size of each Item is exactly 4\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    for (i = 0; i < jsonData.length; i++){",
+							"    pm.expect(Object.keys(jsonData[i]).length).to.eql(4);",
+							"    }",
+							"});",
+							"",
+							"pm.test(\"Have exactly 100 posts\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.eql(100);",
+							"});",
+							"",
+							"pm.test(\"Last post is the 100th\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[jsonData.length-1].id).to.eql(100);",
+							"});",
+							"",
+							"//Validate cookies",
+							"pm.test(\"__cfduid cookie exist\", function(){",
+							"    pm.expect(pm.cookies.has('__cfduid')).to.be.true;",
+							"});",
+							"",
+							"//Response.Header Validations",
+							"//validação se todos os headers estão presentes",
+							"pm.test(\"All expected Headers exists\", function(){",
+							"  pm.expect(pm.response.headers.get(\"Date\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Transfer-Encoding\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Connection\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"X-Powered-By\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Vary\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Access-Control-Allow-Credentials\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Cache-Control\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Pragma\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Expires\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"X-Content-Type-Options\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Etag\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Via\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"CF-Cache-Status\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Age\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Expect-CT\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Server\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"CF-RAY\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Content-Encoding\")).not.eql(undefined);",
+							"});",
+							"//validação de header comparando com string",
+							"pm.test(\"Header Content-Type is rigth\", function () {",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+							"});",
+							"//Validação de header via REGEX",
+							"pm.test(\"Header CF-RAY is right\", function () {",
+							"    pm.expect(pm.response.headers.get(\"CF-RAY\")).to.match(/^[a-z0-9]{16}-[A-Z]{3}$/);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}/posts/",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"posts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Step 2 - Post a post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a7fce247-f39e-4a38-97f4-165d9b601fd4",
+						"exec": [
+							"//HTTP status Validation",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Response.Body Validations",
+							"pm.test(\"Response must be json and have a body\", function () {",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"pm.test(\"Validate responseBody key 'title'\", function(){",
+							"    var reqBody = JSON.parse(request.data);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.title).to.eql(reqBody.title);",
+							"});",
+							"",
+							"pm.test(\"Validate responseBody key 'userId'\", function(){",
+							"    var reqBody = JSON.parse(request.data);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userId).to.eql(reqBody.userId);",
+							"});",
+							"",
+							"pm.test(\"Validate responseBody key 'body'\", function(){",
+							"    var reqBody = JSON.parse(request.data);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.body).to.eql(reqBody.body);",
+							"});",
+							"",
+							"pm.test(\"Validate responseBody key 'Id'\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(101);",
+							"});",
+							"",
+							"//Schema Validation",
+							"pm.test('Response Schema is valid', () => {",
+							"    const schema = {",
+							"        \"type\": \"object\",",
+							"        \"title\": \"The Root Schema\",",
+							"        \"items\": {",
+							"          \"$id\": \"#/items\",",
+							"          \"type\": \"object\",",
+							"          \"title\": \"The Items Schema\",",
+							"          \"required\": [",
+							"            \"userId\",",
+							"            \"id\",",
+							"            \"title\",",
+							"            \"body\"",
+							"          ],",
+							"          \"properties\": {",
+							"            \"userId\": {",
+							"              \"$id\": \"#/items/properties/userId\",",
+							"              \"type\": \"integer\",",
+							"              \"title\": \"The Userid Schema\"",
+							"            },",
+							"            \"id\": {",
+							"              \"$id\": \"#/items/properties/id\",",
+							"              \"type\": \"integer\",",
+							"              \"title\": \"The Id Schema\"",
+							"            },",
+							"            \"title\": {",
+							"              \"$id\": \"#/items/properties/title\",",
+							"              \"type\": \"string\",",
+							"              \"title\": \"The Title Schema\"",
+							"            },",
+							"            \"body\": {",
+							"              \"$id\": \"#/items/properties/body\",",
+							"              \"type\": \"string\",",
+							"              \"title\": \"The Body Schema\"",
+							"            }",
+							"          }",
+							"        }",
+							"    };",
+							"pm.response.to.have.jsonSchema(schema);",
+							"});",
+							"",
+							"",
+							"//Validate cookies",
+							"pm.test(\"__cfduid cookie exist\", function(){",
+							"    pm.expect(pm.cookies.has('__cfduid')).to.be.true;",
+							"});",
+							"",
+							"//Response.Header Validations",
+							"//validação se todos os headers estão presentes",
+							"pm.test(\"All expected Headers exists\", function(){",
+							"  pm.expect(pm.response.headers.get(\"Date\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Content-Length\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Connection\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"X-Powered-By\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Vary\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Access-Control-Allow-Credentials\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Cache-Control\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Pragma\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Expires\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"X-Content-Type-Options\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Etag\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Via\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"CF-Cache-Status\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Access-Control-Expose-Headers\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Expect-CT\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Server\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"CF-RAY\")).not.eql(undefined);",
+							"  pm.expect(pm.response.headers.get(\"Location\")).not.eql(undefined);",
+							"});",
+							"//validação de header comparando com string",
+							"pm.test(\"Header Content-Type is rigth\", function () {",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+							"});",
+							"//Validação de header via REGEX",
+							"pm.test(\"Header CF-RAY is right\", function () {",
+							"    pm.expect(pm.response.headers.get(\"CF-RAY\")).to.match(/^[a-z0-9]{16}-[A-Z]{3}$/);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": 10,\n    \"title\": \"teste\",\n    \"body\": \"cupiditate quo est a modi nesciunt soluta\\nipsa voluptas error itaque dicta in\\nautem qui minus magnam et distinctio eum\\naccusamus ratione error aut\"\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}/posts",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "e8334808-1eaa-4d21-8504-8ef7db6c4301",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ffb387d1-656c-44ab-a8e2-e0d0fe1e9303",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "e2c57dda-f513-4ca6-835e-fec0e4562eea",
+			"key": "endpoint",
+			"value": "https://jsonplaceholder.typicode.com",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
